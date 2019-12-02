@@ -1,0 +1,153 @@
+﻿
+@{
+    ViewBag.Title = "RoomManage";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section styles
+{
+    <link href="~/Content/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+}
+@section scripts
+{
+    <script src="~/Content/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/Content/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="~/Content/js/demo/datatables-demo.js"></script>
+    <script src="~/Content/vendor/axios/axios.min.js"></script>
+    <script src="~/Content/js/notify.js"></script>
+
+}
+<!-- modal add-->
+<a class="btn btn-primary mb-2" href="/Room/AddRoom">
+    Thêm thông tin phòng mới
+</a>
+
+
+<!-- end modal add-->
+<!-- DataTables -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-table"></i>
+        Danh sách phòng
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Mã phòng</th>
+                        <th>Tên tên phòng</th>
+                        <th>Phòng (Nam/Nữ)</th>
+                        <th>Thuộc tòa nhà</th>
+                        <th>Tổng số giường</th>
+                        <th>Số giường còn trống</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Mã phòng</th>
+                        <th>Tên tên phòng</th>
+                        <th>Phòng (Nam/Nữ)</th>
+                        <th>Thuộc tòa nhà</th>
+                        <th>Tổng số giường</th>
+                        <th>Số giường còn trống</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var it in ViewBag.lstRooms)
+                    {
+                        <tr>
+                            <td>@it.RoomId</td>
+                            <td>@it.RoomName</td>
+                            @if (it.ForGender == 0)
+                            {
+                                <td>Nữ</td>
+                            }
+                            else
+                            {
+                                <td>Nam</td>
+                            }
+                            <td>@it.Homefleet</td>
+                            <td>@it.BedNumber</td>
+                            <td>@it.BedEmpty</td>
+                            <td>
+                                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                    <div class="btn-group mr-2" role="group" aria-label="Button Edit">
+                                        <a class="btn btn-warning" href="/Room/EditRoom?roomId=@it.RoomId"><i class="fa fa-edit"></i></a>
+                                    </div>
+                                    <div class="btn-group mr-2" role="group" aria-label="Button Delete">
+                                        <button class="btn btn-danger" onclick="setValueDelete(@it.RoomId)" data-toggle="modal" data-target="#modalDelete"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Delete confirm -->
+<div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Xác nhận xóa thông tin tòa phòng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <input type="hidden" id="idEntity" />
+            </form>
+            <div class="modal-body">
+                <h6 class="text-danger">
+                    Bạn có chắc chắn muốn xóa phòng này không?
+                </h6>
+                <p class="text-danger">
+                    
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" id="btnDelete" onclick="">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Delete confirm -->
+
+
+@section jscode
+{
+    <script>
+        // event button delete click
+        function setValueDelete(Id) {
+            $('#idEntity').val(Id);
+        }
+
+        // event confirm delete record
+        $('#btnDelete').click(function () {
+            var id = $('#idEntity').val();
+
+            axios({
+                method: 'get',
+                url: 'DeleteRoom?id=' + id
+            })
+                .then((response) => {
+                    console.log(response.data);
+                    location.reload();
+                    $.notify('Xóa thông tin tòa nhà thành công', 'success');
+                })
+                .catch((exception) => {
+                    console.log(exception.data);
+                    $.notify('Đã xảy ra lỗi', 'error');
+                });
+        });
+    </script>
+}
+

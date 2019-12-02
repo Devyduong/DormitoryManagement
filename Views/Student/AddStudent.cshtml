@@ -1,0 +1,252 @@
+﻿@model DormitoryManagement.ViewModels.AddStudentViewModel
+@{
+    ViewBag.Title = "AddStudent";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section styles
+{
+    <link href="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Content/vendor/axios/axios.min.js"></script>
+    <script src="~/Content/js/notify.js"></script>
+    <script src="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+
+}
+<div class="card">
+    <h5 class="card-header">Thông tin cơ bản</h5>
+    <div class="card-body">
+
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="studentCode">Mã sinh viên</label>
+                    <input type="text" class="form-control" id="studentCode" required />
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="studentName">Tên sinh viên</label>
+                    <input type="text" class="form-control" id="studentName" required />
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="validationTooltip04">Giới tính</label>
+                    <select class="custom-select" id="gender" required>
+                        <option selected disabled value="">Choose...</option>
+                        <option value="1">Nam</option>
+                        <option value="0">Nữ</option>
+                    </select>
+                    <div class="invalid-tooltip">
+                        Please select a valid state.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="CMND">Số CMND/ Số căn cước</label>
+                    <input type="text" class="form-control pull-right" id="CMND" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="dateCMND">Ngày cấp</label>
+
+                    <div class="input-group date">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="dateCMND"/>
+                    </div>
+                    <!-- /.input group -->
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="issuedBy">Nơi cấp</label>
+                    <input type="text" class="form-control pull-right" id="issuedBy"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="dob">Ngày sinh</label>
+
+                    <div class="input-group date">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="dob">
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="folk">Dân tộc</label>
+                    <input type="text" class="form-control" id="folk" />
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="religion">Tôn giáo</label>
+                    <input type="text" class="form-control" id="religion" />
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="nation">Quốc tịch</label>
+                    <input type="text" class="form-control" id="nation" />
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="studentYear">Sinh viên năm thứ</label>
+                    <input type="number" class="form-control" id="studentYear" placeholder="VD: 3"/>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="department">Ngành</label>
+                    <input type="text" class="form-control" id="department" placeholder="VD: Công nghệ thông tin"/>
+                </div>
+
+                <div class="form-group col-md-5">
+                    <label for="studentYear">Trường</label>
+                    <input type="text" class="form-control" id="school" placeholder="VD: Đại học Vinh"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-2 mb-2">
+    <h5 class="card-header">Thông tin liên hệ và xác thực</h5>
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4 mb-3">
+                    <label for="validationDefaultUsername">Email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend2"><i class="fa fa-at"></i></span>
+                        </div>
+                        <input type="email" class="form-control" id="inputEmail" aria-describedby="inputGroupPrepend2" required>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" id="inputPassword" class="form-control" aria-describedby="passwordHelpInline">
+                    <small id="passwordHelpInline" class="text-muted">
+                        Mật khẩu phải dài ít nhất 8 kí tự, chứa ít nhất 1 kí tự số, chữ in hoa, chữ thường, ký tự đặc biệt
+                    </small>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="ConfirmPassword">Repeat Password</label>
+                    <input type="password" id="ConfirmPassword" class="form-control" aria-describedby="passwordHelpInline">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="validationDefaultUsername">Số điện thoại</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="iconphone"><i class="fa fa-phone"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="phoneNumber" aria-describedby="inputGroupPrepend2" required>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-8">
+                    <label for="inputAddress">Địa chỉ</label>
+                    <input type="text" class="form-control" id="inputAddress" placeholder="VD: xóm 1, xã/phường Abc, huyện/thành phố Bcd,..">
+                    <small id="" class="text-muted">
+                        Nhập đầy đủ xóm/làng/thôn, xã/phường, huyện, tỉnh/thành phố
+                    </small>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Chọn ảnh đại diện</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+            </div>
+
+
+        </form>
+        <button onclick="addStudent()" class="btn btn-primary"><i class="fa fa-plus"></i> Thêm thông tin sinh viên vào hệ thống</button>
+    </div>
+</div>
+
+@section jscode
+{
+    <script>
+        // Set dateTime picker
+        $(function () {
+            //Date cmnd
+            $('#dateCMND').datepicker({
+                autoclose: true
+            });
+
+            //Date of birth 
+            $('#dob').datepicker({
+                autoclose: true
+            });
+        })
+
+
+        // handler events
+
+        function addStudent() {
+            var studentId = $('#studentCode').val();
+            var studentName = $('#studentName').val();
+            var gender = $('#gender').val();
+            var cmnd = $('#CMND').val();
+            var dateCMND = $('#dateCMND').val();
+            var issuedBy = $('#issuedBy').val();
+            var dob = $('#dob').val();
+            var folk = $('#folk').val();
+            var religion = $('#religion').val();
+            var nation = $('#nation').val();
+            var studentYear = $('#studentYear').val();
+            var department = $('#department').val();
+            var school = $('#school').val();
+            var inputEmail = $('#inputEmail').val();
+            var inputPassword = $('#inputPassword').val();
+            var phoneNumber = $('#phoneNumber').val();
+            var confirmPass = $('#ConfirmPassword').val();
+            var inputAddress = $('#inputAddress').val();
+            var photo = $('#customFile').val();
+
+            axios({
+                method: 'post',
+                url: '/Account/CreateStudent',
+                data: {
+                    model: {
+                        StudentId: studentId,
+                        FullName: studentName,
+                        Gender: gender,
+                        DOB: dob,
+                        CMND: cmnd,
+                        DATECMND: dateCMND,
+                        IssuedBy: issuedBy,
+                        Religion: religion,
+                        Folk: folk,
+                        Nation: nation,
+                        StudentYear: studentYear,
+                        StudyAt: school,
+                        Department: department,
+                        Address: inputAddress,
+                        Photo: photo,
+                        Email: inputEmail,
+                        Password: inputPassword,
+                        ConfirmPassword: confirmPass,
+                        PhoneNumber: phoneNumber
+                    }
+                }
+            })
+                .then(() => {
+                    window.location.replace('/Student/Index');
+                })
+            .catch((exception) => {
+                console.log(exception);
+            });
+        }
+
+        // end Handler events
+    </script>
+}

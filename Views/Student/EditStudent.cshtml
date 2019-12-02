@@ -1,0 +1,244 @@
+﻿@model DormitoryManagement.ViewModels.AddStudentViewModel
+@{
+    ViewBag.Title = "EditStudent";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section styles
+{
+    <link href="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Content/vendor/axios/axios.min.js"></script>
+    <script src="~/Content/js/notify.js"></script>
+    <script src="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+
+}
+<div class="card">
+    <h5 class="card-header">Thông tin cơ bản</h5>
+    <div class="card-body">
+
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="studentCode">Mã sinh viên</label>
+                    <input type="text" class="form-control disabled" value="@Model.StudentId" disabled id="studentId" required />
+                    <input type="hidden" value="@Model.StudentId" id="studentCode" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="studentName">Tên sinh viên</label>
+                    <input type="text" class="form-control" id="studentName" value="@Model.FullName" required />
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="validationTooltip04">Giới tính</label>
+                    <select class="custom-select" id="gender" required>
+                        <option selected disabled>Choose...</option>
+                        @if (Model.Gender == 1)
+                        {
+                            <option value="1" selected>Nam</option>
+                            <option value="0">Nữ</option>
+                        }
+                        else
+                        {
+                            <option value="1">Nam</option>
+                            <option value="0" selected>Nữ</option>
+                        }
+                    </select>
+                    <div class="invalid-tooltip">
+                        Please select a valid state.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="CMND">Số CMND/ Số căn cước</label>
+                    <input type="text" class="form-control pull-right" id="CMND" value="@Model.CMND" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="dateCMND">Ngày cấp</label>
+
+                    <div class="input-group date">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="dateCMND" value="@Model.DATECMND" />
+                    </div>
+                    <!-- /.input group -->
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="issuedBy">Nơi cấp</label>
+                    <input type="text" class="form-control pull-right" id="issuedBy" value="@Model.IssuedBy" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="dob">Ngày sinh</label>
+
+                    <div class="input-group date">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="dob" value="@Model.DOB">
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="folk">Dân tộc</label>
+                    <input type="text" class="form-control" id="folk" value="@Model.Folk" />
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="religion">Tôn giáo</label>
+                    <input type="text" class="form-control" id="religion" value="@Model.Religion" />
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="nation">Quốc tịch</label>
+                    <input type="text" class="form-control" id="nation" value="@Model.Nation"/>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="studentYear">Sinh viên năm thứ</label>
+                    <input type="number" class="form-control" id="studentYear" placeholder="VD: 3" value="@Model.StudentYear"/>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="department">Ngành</label>
+                    <input type="text" class="form-control" id="department" placeholder="VD: Công nghệ thông tin" value="@Model.Department"/>
+                </div>
+
+                <div class="form-group col-md-5">
+                    <label for="studentYear">Trường</label>
+                    <input type="text" class="form-control" id="school" placeholder="VD: Đại học Vinh" value="@Model.StudyAt"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-2 mb-2">
+    <h5 class="card-header">Thông tin liên hệ và xác thực</h5>
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4 mb-3">
+                    <label for="validationDefaultUsername">Email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend2"><i class="fa fa-at"></i></span>
+                        </div>
+                        <input type="email" disabled value="@Model.Email" class="form-control" id="inputEmail" aria-describedby="inputGroupPrepend2" required>
+                        <input type="hidden" value="@Model.Email" id="ipEmail" />
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="validationDefaultUsername">Số điện thoại</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="iconphone"><i class="fa fa-phone"></i></span>
+                        </div>
+                        <input type="text" class="form-control" value="@Model.PhoneNumber" id="phoneNumber" aria-describedby="inputGroupPrepend2" required>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label>Chọn ảnh đại diện</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile" value="@Model.Photo"/>
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-12">
+                    <label for="inputAddress">Địa chỉ</label>
+                    <input type="text" class="form-control" id="inputAddress" placeholder="VD: xóm 1, xã/phường Abc, huyện/thành phố Bcd,.." value="@Model.Address">
+                    <small id="" class="text-muted">
+                        Nhập đầy đủ xóm/làng/thôn, xã/phường, huyện, tỉnh/thành phố
+                    </small>
+                </div>
+            </div>
+
+        </form>
+        <button onclick="saveInformation()" class="btn btn-warning"><i class="fa fa-pen"></i> Lưu lại</button>
+        <a class="btn btn-secondary" href="/Student/Index">Hủy</a>
+    </div>
+</div>
+
+@section jscode
+{
+    <script>
+        // Set dateTime picker
+        $(function () {
+            //Date cmnd
+            $('#dateCMND').datepicker({
+                autoclose: true
+            });
+
+            //Date of birth
+            $('#dob').datepicker({
+                autoclose: true
+            });
+        })
+
+        // handle events
+        function saveInformation() {
+            var studentId = $('#studentCode').val();
+            var studentName = $('#studentName').val();
+            var gender = $('#gender').val();
+            var cmnd = $('#CMND').val();
+            var dateCMND = $('#dateCMND').val();
+            var issuedBy = $('#issuedBy').val();
+            var dob = $('#dob').val();
+            var folk = $('#folk').val();
+            var religion = $('#religion').val();
+            var nation = $('#nation').val();
+            var studentYear = $('#studentYear').val();
+            var department = $('#department').val();
+            var school = $('#school').val();
+            var phoneNumber = $('#phoneNumber').val();
+            var inputAddress = $('#inputAddress').val();
+            var photo = $('#customFile').val();
+            var email = $('#ipEmail').val();
+
+            axios({
+                method: 'post',
+                url: '/Account/UpdateStudent',
+                data: {
+                    model: {
+                        StudentId: studentId,
+                        FullName: studentName,
+                        Gender: gender,
+                        DOB: dob,
+                        CMND: cmnd,
+                        DATECMND: dateCMND,
+                        IssuedBy: issuedBy,
+                        Religion: religion,
+                        Folk: folk,
+                        Nation: nation,
+                        StudentYear: studentYear,
+                        StudyAt: school,
+                        Department: department,
+                        Address: inputAddress,
+                        Photo: photo,
+                        PhoneNumber: phoneNumber,
+                        Email: email
+                    }
+                }
+            })
+                .then(() => {
+                    window.location.replace('/Student/Index');
+                })
+                .catch((exception) => {
+                console.log(exception);
+            });
+        }
+    </script>
+}
+
