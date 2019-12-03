@@ -20,5 +20,6 @@ namespace DormitoryManagement.Models
         public DbSet<Student> Students { get; set; }
         public DbSet<HomeFleet> HomeFleets { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<Rent> Rents { get; set; }
     }
 }

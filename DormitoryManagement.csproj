@@ -158,6 +158,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomeFleetController.cs" />
+    <Compile Include="Controllers\RentController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Enums\EnumGender.cs" />
@@ -180,9 +181,14 @@
     <Compile Include="Migrations\201911300206574_addTableRoom.Designer.cs">
       <DependentUpon>201911300206574_addTableRoom.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912031341394_addTableRent.cs" />
+    <Compile Include="Migrations\201912031341394_addTableRent.Designer.cs">
+      <DependentUpon>201912031341394_addTableRent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppUser.cs" />
     <Compile Include="Models\HomeFleet.cs" />
+    <Compile Include="Models\Rent.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\WebContext.cs" />
@@ -193,6 +199,7 @@
     <Compile Include="ViewModels\AddStudentViewModel.cs" />
     <Compile Include="ViewModels\DeleteStudentViewModel.cs" />
     <Compile Include="ViewModels\EditRoomViewModel.cs" />
+    <Compile Include="ViewModels\ListRentHomeViewModel.cs" />
     <Compile Include="ViewModels\ListStudentViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ModifyHomeFleetViewModel.cs" />
@@ -2092,6 +2099,8 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Student\EditStudent.cshtml" />
     <Content Include="Views\Room\EditRoom.cshtml" />
+    <Content Include="Views\Rent\RentManage.cshtml" />
+    <Content Include="Views\Rent\AddRent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2121,6 +2130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911300206574_addTableRoom.resx">
       <DependentUpon>201911300206574_addTableRoom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912031341394_addTableRent.resx">
+      <DependentUpon>201912031341394_addTableRent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
