@@ -28,7 +28,7 @@ namespace DormitoryManagement.Controllers
                 hf.HFName = model.Name;
                 hf.NumberOfRoom = 0;
                 hf.PricePerRoom = model.Price;
-                hf.Status = 0;
+                hf.Status = 1;
 
                 db.HomeFleets.Add(hf);
                 await db.SaveChangesAsync();

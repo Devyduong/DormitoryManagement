@@ -185,6 +185,10 @@
     <Compile Include="Migrations\201912031341394_addTableRent.Designer.cs">
       <DependentUpon>201912031341394_addTableRent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912070831174_editTableRent.cs" />
+    <Compile Include="Migrations\201912070831174_editTableRent.Designer.cs">
+      <DependentUpon>201912070831174_editTableRent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppUser.cs" />
     <Compile Include="Models\HomeFleet.cs" />
@@ -195,6 +199,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AddHomeFleetViewModel.cs" />
+    <Compile Include="ViewModels\AddRentViewModel.cs" />
     <Compile Include="ViewModels\AddRoomViewModel.cs" />
     <Compile Include="ViewModels\AddStudentViewModel.cs" />
     <Compile Include="ViewModels\DeleteStudentViewModel.cs" />
@@ -2133,6 +2138,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912031341394_addTableRent.resx">
       <DependentUpon>201912031341394_addTableRent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912070831174_editTableRent.resx">
+      <DependentUpon>201912070831174_editTableRent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

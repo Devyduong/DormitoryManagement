@@ -4,4 +4,150 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+@section styles
+{
+    <link href="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Content/vendor/axios/axios.min.js"></script>
+    <script src="~/Content/js/notify.js"></script>
+    <script src="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 
+}
+
+
+<div class="card">
+    <h5 class="card-header">Đăng ký kí túc xá cho sinh viên</h5>
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="student">Sinh viên</label>
+                    <select id="student" class="form-control">
+                        @foreach (var it in ViewBag.students)
+                        {
+                            <option value="@it.StudentId">@it.FullName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="homefleet">Tòa nhà</label>
+                    <select id="homefleet" class="form-control">
+                        @foreach (var it in ViewBag.homefleets)
+                        {
+                            <option value="@it.HFID">@it.HFName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="room">Phòng</label>
+                    <select id="room" class="form-control">
+                        <option selected>Choose room...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="startdate">Ngày bắt đầu</label>
+
+                    <div class="input-group date">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="startdate" />
+                    </div>
+                    <!-- /.input group -->
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="enddate">Ngày hết hạn phòng</label>
+
+                    <div class="input-group date">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="enddate" />
+                    </div>
+                    <!-- /.input group -->
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="paid">Số tiền đóng trước</label>
+                <input type="number" class="form-control" id="paid" />
+            </div>
+            <button class="btn btn-dark" onclick="saveToSystem()">Lưu vào hệ thống</button>
+        </form>
+    </div>
+</div>
+
+@section jscode{
+    <script>
+        // Set dateTime picker
+        $(function () {
+            //Date cmnd
+            $('#startdate').datepicker({
+                autoclose: true 
+            });
+
+            //Date of birth
+            $('#enddate').datepicker({
+                autoclose: true
+            });
+        })
+
+        $('#homefleet').change(function () {
+            var id = $('#homefleet').val();
+            loadRooms(id);
+        });
+
+        function loadRooms(hfId){           
+            $('#room').empty();
+            axios({
+                method: 'get',
+                url: 'getRoomsByHomefleetId?hfId=' + hfId
+            })
+                .then((response) => {
+                    console.log(response);
+                    var array = response.data;
+                    console.log(array);
+                    if (array != '') {
+                        for (i in array) {
+                            $("#room").append("<option value='" + array[i].RoomId+"' > " + array[i].RoomName + "</option > ");
+                        }
+                    }
+                })
+                .catch((exception) => {
+                    console.log(exception);
+                });
+        }
+
+        function saveToSystem() {
+            var student = $('#student').val();
+            var homefleet = $('#homefleet').val();
+            var room = $('#room').val();
+            var startdate = $('#startdate').val();
+            var enddate = $('#enddate').val();
+            var paid = $('#paid').val();
+
+            axios({
+                method: 'post',
+                url: '/Rent/AddRentToDatabase',
+                data: {
+                    model: {
+                        Student: student,
+                        Homefleet: homefleet,
+                        Room: room,
+                        StartDate: startdate,
+                        EndDate: enddate,
+                        Paid: paid
+                    }
+                }
+            }).then(() => {
+                window.location.replace('/Rent/RentManage');
+            }).catch((exception) => {
+                console.log(exception);
+            });
+
+        }
+    </script>
+}

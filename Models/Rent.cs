@@ -13,6 +13,7 @@ namespace DormitoryManagement.Models
 
         [StringLength(20)]
         public string Renter { get; set; }
+        public int? Homefleet { get; set; }
 
         public int? Room { get; set; }
 

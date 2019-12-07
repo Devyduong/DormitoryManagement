@@ -52,7 +52,68 @@ namespace DormitoryManagement.Controllers
 
         public ActionResult AddRent()
         {
+            ViewBag.students = db.Students.Where(d => d.Status == 1).ToList();
+            ViewBag.homefleets = db.HomeFleets.Where(d => d.Status == 1).ToList();
             return View();
+        }
+        [HttpPost]
+        public JsonResult AddRentToDatabase(AddRentViewModel model)
+        {
+            try
+            {
+                Rent rent = new Rent
+                {
+                    Renter = model.Student,
+                    Room = model.Room,
+                    Homefleet = model.Homefleet,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    CreateDate = DateTime.Now,
+                    TotalFee = getPricePerMonth(model.Homefleet),
+                    Paid = model.Paid,
+                    Status = 0
+                };
+
+                db.Rents.Add(rent);
+
+                Student student = db.Students.Where(s => s.StudentId.Equals(model.Student)).FirstOrDefault();
+                student.Status = 0;
+                db.Entry(student).State = System.Data.Entity.EntityState.Modified;
+
+                Room room = db.Rooms.Where(r => r.RoomId == model.Room).FirstOrDefault();
+                room.BedEmpty = room.BedEmpty - 1;
+                db.Entry(room).State = System.Data.Entity.EntityState.Modified;
+                
+                db.SaveChanges();
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }catch(Exception ex)
+            {
+                return Json("Error: "+ ex.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public JsonResult deleteRent(int rentId)
+        {
+            try
+            {
+                Rent rent = db.Rents.Where(d => d.ID == rentId).FirstOrDefault();
+                db.Rents.Remove(rent);
+
+                Student student = db.Students.Where(s => s.StudentId.Equals(rent.Renter)).FirstOrDefault();
+                student.Status = 1;
+                db.Entry(student).State = System.Data.Entity.EntityState.Modified;
+
+                Room room = db.Rooms.Where(r => r.RoomId == rent.Room).FirstOrDefault();
+                room.BedEmpty = room.BedEmpty + 1;
+                db.Entry(room).State = System.Data.Entity.EntityState.Modified;
+
+                db.SaveChanges();
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json("Error " + ex.Message, JsonRequestBehavior.AllowGet);
+            }
         }
 
 
@@ -85,6 +146,17 @@ namespace DormitoryManagement.Controllers
         {
             return (int)db.Rooms.Where(r => r.RoomId == id).Select(r => r.Homefleet).FirstOrDefault();
         }
+        [HttpGet]
+        public JsonResult getRoomsByHomefleetId(int hfId)
+        {
+            return Json(db.Rooms.Where(d => d.Homefleet == hfId && d.BedEmpty > 0).ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public double getPricePerMonth(int HFID)
+        {
+            return (double)db.HomeFleets.Where(d => d.HFID == HFID).Select(d => d.PricePerRoom).FirstOrDefault();
+        }
+
         #endregion
     }
 }
