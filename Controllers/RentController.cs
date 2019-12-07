@@ -53,7 +53,11 @@ namespace DormitoryManagement.Controllers
         public ActionResult AddRent()
         {
             ViewBag.students = db.Students.Where(d => d.Status == 1).ToList();
-            ViewBag.homefleets = db.HomeFleets.Where(d => d.Status == 1).ToList();
+            List<HomeFleet> homeFleets = db.HomeFleets.Where(d => d.Status == 1).ToList();
+            ViewBag.homefleets = homeFleets;
+            int hfId = homeFleets.ElementAt(0).HFID;
+            List<Room> rooms = db.Rooms.Where(d => d.Homefleet == hfId).ToList();
+            ViewBag.rooms = rooms;
             return View();
         }
         [HttpPost]
@@ -91,6 +95,53 @@ namespace DormitoryManagement.Controllers
                 return Json("Error: "+ ex.Message, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult EditRent(int rentId)
+        {
+            if(rentId == null)
+            {
+                return View("RentManage");
+            }
+            Rent rent = db.Rents.Where(d => d.ID == rentId).FirstOrDefault();
+            List<HomeFleet> homeFleets = db.HomeFleets.Where(d => d.Status == 1).ToList();
+            
+            List<Room> rooms = db.Rooms.Where(d => d.Homefleet == rent.Homefleet).ToList();
+            ViewBag.homefleets = homeFleets;
+            ViewBag.rooms = rooms;
+
+            return View(rent);
+        }
+        [HttpPost]
+        public JsonResult UpdateRent(EditRentViewModel model)
+        {
+            try
+            {
+                Rent rent = db.Rents.Where(d => d.ID == model.ID).FirstOrDefault();
+                rent.StartDate = model.StartDate;
+                rent.EndDate = model.EndDate;
+                if(rent.Room != model.Room)
+                {
+                    Room oldRoom = db.Rooms.Where(r => r.RoomId == rent.Room).FirstOrDefault();
+                    oldRoom.BedEmpty = oldRoom.BedEmpty + 1;
+                    db.Entry(oldRoom).State = System.Data.Entity.EntityState.Modified;
+                }
+                rent.Homefleet = model.Homefleet;
+
+                rent.Room = model.Room;
+                Room newRoom = db.Rooms.Where(r => r.RoomId == rent.Room).FirstOrDefault();
+                newRoom.BedEmpty = newRoom.BedEmpty - 1;
+                db.Entry(newRoom).State = System.Data.Entity.EntityState.Modified;
+
+                db.Entry(rent).State = System.Data.Entity.EntityState.Modified;
+
+                db.SaveChanges();
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json("Error " + ex.Message, JsonRequestBehavior.AllowGet);
+            }       
+        }
+
         [HttpGet]
         public JsonResult deleteRent(int rentId)
         {

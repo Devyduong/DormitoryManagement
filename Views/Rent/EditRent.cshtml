@@ -1,6 +1,6 @@
-﻿
+﻿@model DormitoryManagement.Models.Rent
 @{
-    ViewBag.Title = "AddRent";
+    ViewBag.Title = "EditRent";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -15,41 +15,49 @@
     <script src="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 
 }
-
+<a href="/Rent/RentManage" class="btn btn-success mb-2">Trở về trang danh sách</a>
 
 <div class="card">
-    <h5 class="card-header">Đăng ký kí túc xá cho sinh viên</h5>
+    <h5 class="card-header">Chỉnh sửa thông tin thuê phòng</h5>
     <div class="card-body">
         <form>
+            <input type="hidden" value="@Model.ID" id="idR" />
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="student">Sinh viên</label>
-                    <select id="student" class="form-control">
-                        @foreach (var it in ViewBag.students)
-                        {
-                            <option value="@it.StudentId">@it.FullName</option>
-                        }
-                    </select>
+                    <fieldset disabled>
+                        <label for="student">Sinh viên thuê phòng</label>
+                        <input type="text" value="@Model.Renter" class="form-control" />
+                    </fieldset>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="homefleet">Tòa nhà</label>
                     <select id="homefleet" class="form-control">
                         @foreach (var it in ViewBag.homefleets)
                         {
-                            <option value="@it.HFID">@it.HFName</option>
+                            if (it.HFID == Model.Homefleet)
+                            {
+                                <option value="@it.HFID" selected>@it.HFName</option>
+                            }
+                            else
+                            {
+                                <option value="@it.HFID">@it.HFName</option>
+                            }
                         }
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="room">Phòng</label>
                     <select id="room" class="form-control">
-                        @if (ViewBag.rooms == null)
-                        {
-                            <option disabled>Không có phòng nào</option>
-                        }
                         @foreach (var it in ViewBag.rooms)
                         {
-                            <option value="@it.RoomId">@it.RoomName</option>
+                            if (it.RoomId == Model.Room)
+                            {
+                                <option value="@it.RoomId" selected>@it.RoomName</option>
+                            }
+                            else
+                            {
+                                <option value="@it.RoomId">@it.RoomName</option>
+                            }
                         }
                     </select>
                 </div>
@@ -62,7 +70,7 @@
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                         </div>
-                        <input type="text" class="form-control pull-right" id="startdate" />
+                        <input type="text" class="form-control pull-right" id="startdate" value="@Model.StartDate" />
                     </div>
                     <!-- /.input group -->
                 </div>
@@ -73,17 +81,16 @@
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                         </div>
-                        <input type="text" class="form-control pull-right" id="enddate" />
+                        <input type="text" class="form-control pull-right" id="enddate" value="@Model.EndDate" />
                     </div>
                     <!-- /.input group -->
                 </div>
             </div>
-            <div class="form-group">
-                <label for="paid">Số tiền đóng trước</label>
-                <input type="number" class="form-control" id="paid" />
-            </div>
-            <button class="btn btn-dark" onclick="saveToSystem()">Lưu vào hệ thống</button>
+
+
         </form>
+        <button class="btn btn-warning mt-2" onclick="updateRent()">Lưu lại</button>
+        <a href="/Rent/RentManage" class="btn btn-dark mt-2">Hủy</a>
     </div>
 </div>
 
@@ -93,7 +100,7 @@
         $(function () {
             //Date cmnd
             $('#startdate').datepicker({
-                autoclose: true 
+                autoclose: true
             });
 
             //Date of birth
@@ -107,7 +114,7 @@
             loadRooms(id);
         });
 
-        function loadRooms(hfId){           
+        function loadRooms(hfId) {
             $('#room').empty();
             axios({
                 method: 'get',
@@ -119,7 +126,7 @@
                     console.log(array);
                     if (array != '') {
                         for (i in array) {
-                            $("#room").append("<option value='" + array[i].RoomId+"' > " + array[i].RoomName + "</option > ");
+                            $("#room").append("<option value='" + array[i].RoomId + "' > " + array[i].RoomName + "</option > ");
                         }
                     }
                 })
@@ -128,33 +135,30 @@
                 });
         }
 
-        function saveToSystem() {
-            var student = $('#student').val();
+        function updateRent() {
+            var id = $('#idR').val();
             var homefleet = $('#homefleet').val();
             var room = $('#room').val();
             var startdate = $('#startdate').val();
             var enddate = $('#enddate').val();
-            var paid = $('#paid').val();
 
             axios({
                 method: 'post',
-                url: '/Rent/AddRentToDatabase',
+                url: '/Rent/UpdateRent',
                 data: {
                     model: {
-                        Student: student,
-                        Homefleet: homefleet,
+                        ID: id,
+                        HomeFleet: homefleet,
                         Room: room,
                         StartDate: startdate,
-                        EndDate: enddate,
-                        Paid: paid
+                        EndDate: enddate
                     }
                 }
-            }).then(() => {
+            }).then((response) => {
                 window.location.replace('/Rent/RentManage');
             }).catch((exception) => {
                 console.log(exception);
             });
-
         }
     </script>
 }

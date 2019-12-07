@@ -203,6 +203,7 @@
     <Compile Include="ViewModels\AddRoomViewModel.cs" />
     <Compile Include="ViewModels\AddStudentViewModel.cs" />
     <Compile Include="ViewModels\DeleteStudentViewModel.cs" />
+    <Compile Include="ViewModels\EditRentViewModel.cs" />
     <Compile Include="ViewModels\EditRoomViewModel.cs" />
     <Compile Include="ViewModels\ListRentHomeViewModel.cs" />
     <Compile Include="ViewModels\ListStudentViewModel.cs" />
@@ -2106,6 +2107,7 @@
     <Content Include="Views\Room\EditRoom.cshtml" />
     <Content Include="Views\Rent\RentManage.cshtml" />
     <Content Include="Views\Rent\AddRent.cshtml" />
+    <Content Include="Views\Rent\EditRent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
