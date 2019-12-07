@@ -2,11 +2,13 @@
     ViewBag.Title = "Login";
     Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
-
+@section scripts{
+    <script src="~/Content/vendor/axios/axios.min.js"></script>
+    }
 <div class="limiter">
     <div class="container-login100" style="background-image: url('/Content/login/images/bg-01.jpg');">
         <div class="wrap-login100">
-            <form class="login100-form validate-form">
+            <div class="login100-form validate-form">
                 <span class="login100-form-logo">
                     <i class="zmdi zmdi-landscape"></i>
                 </span>
@@ -33,20 +35,57 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn">
+                    <button class="login100-form-btn" id="btnLogin">
                         Login
                     </button>
                 </div>
-
+                <!--
                 <div class="text-center p-t-90">
                     <a class="txt1" href="#">
                         Forgot Password?
                     </a>
                 </div>
-            </form>
+                -->
+            </div>
         </div>
     </div>
 </div>
 
 
 <div id="dropDownSelect1"></div>
+@section jscode{
+    <script>
+        function login() {
+            var email = $('#username').val();
+            var pass = $('#pass').val();
+            var remember = $('#ckb1').val();
+
+            axios({
+                method: 'post',
+                url: '/Account/ProcessLogin',
+                data: {
+                    model: {
+                        Email: email,
+                        Password: pass,
+                        RememberMe: remember
+                    },
+                    returnUrl: '/Home/Index'
+                }
+                
+            }).then((response) => {
+                if (response.data == "Success") {
+                    window.location.replace('/Dashboard/Dashboard');
+                }
+                else {
+                    console.log(response);
+                }
+            }).catch((exception) => {
+                console.log(exception);
+            });
+
+        }
+        $('#btnLogin').click(function () {
+            login();
+        });
+    </script>
+    }

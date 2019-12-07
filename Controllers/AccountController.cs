@@ -93,6 +93,41 @@ namespace DormitoryManagement.Controllers
                     return View(model);
             }
         }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<JsonResult> ProcessLogin(LoginViewModel model, string returnUrl)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return Json("Invalid", JsonRequestBehavior.AllowGet);
+            //}
+            try
+            {
+                var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        {
+                            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new WebContext()));
+                            AppUser user = db.Users.Where(u => u.UserName.Equals(model.Email)).FirstOrDefault();
+                            string role = user.Roles.ToString();
+                            return Json("Success", JsonRequestBehavior.AllowGet);
+                        }
+                    case SignInStatus.LockedOut:
+                        return Json("Lockout", JsonRequestBehavior.AllowGet);
+                    case SignInStatus.RequiresVerification:
+                        return Json("SendCode", JsonRequestBehavior.AllowGet);//RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    case SignInStatus.Failure:
+                    default:
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return Json("Error", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch(Exception ex)
+            {
+                return Json("Error", JsonRequestBehavior.AllowGet);
+            }
+        }
         [HttpGet]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]

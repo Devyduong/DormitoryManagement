@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace DormitoryManagement.Controllers
 {
+    [Authorize]
     public class HomeFleetController : Controller
     {
         private WebContext db = new WebContext();

@@ -28,8 +28,8 @@
     <!--===============================================================================================-->
 </head>
 <body>
-        @RenderBody()
-    
+    @RenderBody()
+
 
     <!--===============================================================================================-->
     <script src="~/Content/login/vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -47,6 +47,8 @@
     <script src="~/Content/login/vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
     <script src="~/Content/login/js/main.js"></script>
+    @RenderSection("scripts", required: false)
 
+    @RenderSection("jscode", required: false)
 </body>
 </html>

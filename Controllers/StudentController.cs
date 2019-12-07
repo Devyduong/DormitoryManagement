@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace DormitoryManagement.Controllers
 {
+    [Authorize]
     public class StudentController : Controller
     {
         private WebContext db = new WebContext();
