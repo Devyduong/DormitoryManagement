@@ -203,6 +203,7 @@
     <Compile Include="ViewModels\AddRentViewModel.cs" />
     <Compile Include="ViewModels\AddRoomViewModel.cs" />
     <Compile Include="ViewModels\AddStudentViewModel.cs" />
+    <Compile Include="ViewModels\DebtStatisticalViewModel.cs" />
     <Compile Include="ViewModels\DeleteStudentViewModel.cs" />
     <Compile Include="ViewModels\EditRentViewModel.cs" />
     <Compile Include="ViewModels\EditRoomViewModel.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="ViewModels\ListStudentViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ModifyHomeFleetViewModel.cs" />
+    <Compile Include="ViewModels\PayViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\SelectListHomeFleet.cs" />
@@ -2111,6 +2113,8 @@
     <Content Include="Views\Rent\EditRent.cshtml" />
     <Content Include="Views\Dashboard\Dashboard.cshtml" />
     <Content Include="Views\Account\LogOff.cshtml" />
+    <Content Include="Views\Rent\DebtStatistical.cshtml" />
+    <Content Include="Views\Rent\Pay.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

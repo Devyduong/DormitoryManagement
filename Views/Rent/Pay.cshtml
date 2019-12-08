@@ -1,0 +1,130 @@
+﻿@model DormitoryManagement.ViewModels.PayViewModel
+
+@{
+    ViewBag.Title = "Pay";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+@section styles
+{
+    <link href="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Content/vendor/axios/axios.min.js"></script>
+    <script src="~/Content/js/notify.js"></script>
+    <script src="~/Content/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+
+}
+@if (Model == null)
+{
+<div class="card">
+    <h5 class="card-header">Thanh toán chi phí phòng kí túc</h5>
+    <div class="card-body">
+        <form>
+            <div class="form-row align-items-center">
+                <div class="col-sm-3 my-1">
+                    <label class="sr-only" for="inlineFormInputName">Mã sinh viên</label>
+                    <input type="text" class="form-control" id="inputStudentId" placeholder="Mã sinh viên">
+                </div>
+                <div class="col-auto my-1">
+                    <button id="btnSearch" class="btn btn-primary">Tìm</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+}
+else
+{
+
+<div class="card">
+    <h5 class="card-header">Thanh toán chi phí phòng kí túc</h5>
+    <div class="card-body">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.RentId, new { htmlAttributes = new { @class = "form-control" } })
+            <fieldset disabled>
+                <div class="form-row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StudentCode, htmlAttributes: new { @class = "control-label" })
+
+                            @Html.EditorFor(model => model.StudentCode, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.StudentCode, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StudentName, htmlAttributes: new { @class = "control-label" })
+
+                            @Html.EditorFor(model => model.StudentName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.StudentName, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label" })
+
+                            @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.Debt, new { @class = "form-control", @id = "debt" })
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <input type="checkbox" id="payForAll" /> Thanh toán toàn bộ chi phí còn thiếu
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PayFee, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.PayFee, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PayFee, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2">
+                    <input type="submit" value="Thanh toán" class="btn btn-secondary" />
+                </div>
+            </div>
+
+        }
+
+    </div>
+</div>
+}
+
+@section jscode{
+    <script>
+        $('#payForAll').change(function () {
+            var debt = $('#debt').val();
+            $('#PayFee').val(debt);
+        });
+
+        $('#btnSearch').click(function () {
+            var studentId = $('#inputStudentId').val();
+
+            axios({
+                method: 'get',
+                url: '/Rent/getPayByStudentId?id='+studentId
+            }).then((response) => {
+                var student = response.data;
+                console.log(student);
+            }).catch((exception) => {
+                console.log(exception);
+            });
+
+        });
+    </script>
+}

@@ -135,6 +135,9 @@
             var startdate = $('#startdate').val();
             var enddate = $('#enddate').val();
             var paid = $('#paid').val();
+            if (paid == null || paid === '') {
+                paid = 0;
+            }
 
             axios({
                 method: 'post',

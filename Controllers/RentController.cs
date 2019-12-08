@@ -167,9 +167,103 @@ namespace DormitoryManagement.Controllers
                 return Json("Error " + ex.Message, JsonRequestBehavior.AllowGet);
             }
         }
+        [HttpGet]
+        public JsonResult PayAll(int id)
+        {
+             try
+            {
+                Rent rent = db.Rents.Where(d => d.ID == id).FirstOrDefault();
+                rent.TotalFee = 0;
+                rent.Paid = 0;
+
+                db.Entry(rent).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json("Exception " + ex, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public ActionResult Pay(int? id)
+        {
+            if (id != null)
+            {
+                Rent rent = db.Rents.Where(d => d.ID == id).FirstOrDefault();
+
+                PayViewModel model = new PayViewModel();
+                model.RentId = rent.ID;
+                model.StudentCode = rent.Renter;
+                model.StudentName = GetStudentNameById(rent.Renter);
+                model.Debt = (double)(rent.TotalFee - rent.Paid);
+                model.Status = GetStatusPaid((double)rent.TotalFee, (double)rent.Paid);
+                return View(model);
+            }
+            else
+            {
+                return View();
+            }
+        }
+        [HttpPost]
+        public ActionResult Pay(PayViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Rent rent = db.Rents.Where(d => d.ID == model.RentId).FirstOrDefault();
+
+                rent.Paid = rent.Paid + model.PayFee;
+
+                db.Entry(rent).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("DebtStatistical", "Rent");
+            }
+            return View(model);
+        }
+        [HttpGet]
+        public ActionResult DebtStatistical()
+        {
+            List<Rent> lstRent = new List<Rent>();
+            lstRent = db.Rents.Where(d => d.TotalFee > d.Paid).ToList();
+
+            List<DebtStatisticalViewModel> lstDebt = new List<DebtStatisticalViewModel>();
+            int no = 0;
+            if(lstRent.Count > 0)
+            {
+                foreach(Rent rent in lstRent)
+                {
+                    DebtStatisticalViewModel debt = new DebtStatisticalViewModel();
+                    debt.RentId = rent.ID;
+                    debt.StudentCode = rent.Renter;
+                    debt.StudentName = GetStudentNameById(rent.Renter);
+                    debt.Status = GetStatusPaid((double)rent.TotalFee, (double)rent.Paid);
+                    debt.No = no + 1;
+
+                    lstDebt.Add(debt);
+                }
+            }
+            ViewBag.debts = lstDebt;
+            return View();
+        }
 
 
         #region common Functions
+        [HttpGet]
+        public PayViewModel getPayByStudentId(string studentId)
+        {
+            Rent rent = new Rent();
+            PayViewModel model = new PayViewModel();
+
+            rent = db.Rents.Where(d => d.Renter.Equals(studentId)).FirstOrDefault();
+
+            model.RentId = rent.ID;
+            model.StudentCode = rent.Renter;
+            model.StudentName = GetStudentNameById(rent.Renter);
+            model.Debt = (double)(rent.TotalFee - rent.Paid);
+            model.Status = GetStatusPaid((double)rent.TotalFee, (double)rent.Paid);
+
+            return model;
+        }
         private string GetStatusPaid(double total, double paid)
         {
             if(total <= paid)

@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewBag.Title = "DebtStatistical";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section styles
+{
+    <link href="~/Content/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+}
+@section scripts
+{
+    <script src="~/Content/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/Content/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="~/Content/js/demo/datatables-demo.js"></script>
+    <script src="~/Content/vendor/axios/axios.min.js"></script>
+    <script src="~/Content/js/notify.js"></script>
+
+}
+<!-- DataTables -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-table"></i>
+        Danh sách sinh viên còn thiếu tiền phòng
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã sinh viên</th>
+                        <th>Tên sinh viên</th>
+                        <th>Tình trạng thanh toán</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var it in ViewBag.debts)
+                    {
+                        <tr>
+                            <td>@it.No</td>
+                            <td>@it.StudentCode</td>
+                            <td>@it.StudentName</td>
+                            <td>@it.Status</td>
+                            <td>
+                                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                    <div class="btn-group mr-2" role="group" aria-label="Button Edit">
+                                        <a class="btn btn-success" href="/Rent/Pay?id=@it.RentId"><i class="fa fa-edit"></i> Thanh toán</a>
+                                    </div>
+                                    <div class="btn-group mr-2" role="group" aria-label="Button Delete">
+                                        <button class="btn btn-danger" onclick="setIdForDelete(@it.RentId)" data-toggle="modal" data-target="#modalDelete"><i class="fa fa-trash"> Xóa nợ</i></button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Delete confirm -->
+<div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Xác nhận xóa nợ phòng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <input type="hidden" id="idEntity" />
+            </form>
+            <div class="modal-body">
+                <h6 class="text-danger">
+                    Sinh viên này đã thanh toán chi phí phòng đầy đủ?
+                </h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" id="btnDelete" onclick="">Xóa nợ</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Delete confirm -->
+
+@section jscode{
+    <script>
+        function setIdForDelete(id) {
+            $('#idEntity').val(id);
+        }
+
+        $('#btnDelete').click(function() {
+            var id = $('#idEntity').val();
+
+            axios({
+                method: 'get',
+                url: '/Rent/PayAll?id=' + id
+            }).then((response) => {
+                window.location.reload();
+            }).catch((exception) => {
+                console.log(exception);
+                $.notify("Đã có lỗi xảy ra", "error");
+            });
+        });
+    </script>
+}
