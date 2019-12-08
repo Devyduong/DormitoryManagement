@@ -1,4 +1,4 @@
-﻿
+﻿@using System.Globalization
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -52,7 +52,6 @@
     </div>
 </div>
 <!-- end Add new HomeFleet -->
-
 <!-- Delete confirm -->
 <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -68,7 +67,7 @@
             </form>
             <div class="modal-body">
                 <h6 class="text-danger">
-                    Bạn có chắc chắn muốn xóa thông tin bản ghi này không? 
+                    Bạn có chắc chắn muốn xóa thông tin bản ghi này không?
                 </h6>
                 <p class="text-danger">
                     Việc xóa thông tin tòa nhà này đồng nghĩa sẽ xóa tất cả thông tin các phòng thuộc tòa nhà này và các bản ghi hợp đồng thuê nhà có liên quan đến tòa nhà này
@@ -115,7 +114,6 @@
 </div>
 
 <!-- end modal Edit Homfleet infor -->
-
 <!-- DataTables -->
 <div class="card mb-3">
     <div class="card-header">
@@ -131,20 +129,9 @@
                         <th>Tên tòa nhà</th>
                         <th>Số phòng</th>
                         <th>Giá mỗi phòng</th>
-                        <th>Trạng thái</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tfoot>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên tòa nhà</th>
-                        <th>Số phòng</th>
-                        <th>Giá mỗi phòng</th>
-                        <th>Trạng thái</th>
-                        <th>Action</th>
-                    </tr>
-                </tfoot>
                 <tbody>
                     @foreach (var it in ViewBag.lstHomeFleet)
                     {
@@ -152,8 +139,8 @@
                             <td>@it.HFID</td>
                             <td>@it.HFName</td>
                             <td>@it.NumberOfRoom</td>
-                            <td>@it.PricePerRoom</td>
-                            <td>@it.Status</td>
+
+                            <td>@it.PricePerRoom.ToString("C", CultureInfo.GetCultureInfo("vi-VN"))</td>
                             <td>
                                 <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                                     <div class="btn-group mr-2" role="group" aria-label="Button Edit">
@@ -198,7 +185,7 @@
                 });
         }
 
-        // modify record 
+        // modify record
         function modifyHomeFleet(id, name, price) {
             axios({
                 method: 'post',
@@ -301,13 +288,13 @@
         }
 
         // click Edit button
-        function setValueForModify(id,name,price) {
+        function setValueForModify(id, name, price) {
             $('#inputId').val(id);
             $('#inputNameEdited').val(name);
             $('#inputPriceEdited').val(price);
         }
 
-        //event confirm modify record 
+        //event confirm modify record
         $('#btnEdit').click(function () {
             var id = $('#inputId').val();
             var name = $('#inputNameEdited').val();

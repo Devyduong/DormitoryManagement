@@ -2110,6 +2110,7 @@
     <Content Include="Views\Rent\AddRent.cshtml" />
     <Content Include="Views\Rent\EditRent.cshtml" />
     <Content Include="Views\Dashboard\Dashboard.cshtml" />
+    <Content Include="Views\Account\LogOff.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
